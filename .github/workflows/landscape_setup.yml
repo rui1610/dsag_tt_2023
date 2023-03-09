@@ -27,7 +27,7 @@ jobs:
               shell: bash
               run: |
                 ./btpsa \
-                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/hr/dev/parameters.json \
+                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/hr/dev/parameters.json' \
                 -region '${{ env.REGION }}' \
                 -directoryname '${{ env.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
@@ -38,7 +38,7 @@ jobs:
               shell: bash
               run: |
                 ./btpsa \
-                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/hr/test/parameters.json \
+                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/hr/test/parameters.json' \
                 -region '${{ env.REGION }}' \
                 -directoryname '${{ env.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
