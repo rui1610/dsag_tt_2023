@@ -21,3 +21,8 @@ jobs:
               working-directory: /home/user
               shell: bash
               run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/hr/dev/parameters.json'
+            - name: 'Setup landscape for HR TEST'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/hr/test/parameters.json'
