@@ -11,7 +11,29 @@ env:
   REGION: us10
 
 jobs:
+    setup-directory:
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+          options: --user root
+        env: 
+            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
+            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+        steps:
+            - name: 'Setup directory for all landscapes'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: |
+                ./btpsa \
+                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/vt034_landscape/parameters.json' \
+                -region '${{ env.REGION }}' \
+                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -loginmethod '${{ env.LOGIN_METHOD }}' \
+
     landscape-setup-hr:
+        needs: setup-directory
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
@@ -56,6 +78,7 @@ jobs:
                 -usedirectory true
 
     landscape-setup-it:
+        needs: setup-directory
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
