@@ -31,6 +31,7 @@ jobs:
                 -region '${{ env.REGION }}' \
                 -directoryname '${{ env.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
+                -usedirectory true
 
     landscape-setup-hr:
         needs: setup-directory
