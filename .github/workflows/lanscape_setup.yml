@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-    integration-test:
+    landscape-setup:
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
