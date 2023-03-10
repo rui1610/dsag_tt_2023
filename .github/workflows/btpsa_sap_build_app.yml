@@ -1,4 +1,4 @@
-name: btp-setup-automator - SAP Build App
+name: btp-setup-automator - SAP Build Apps
 # This file defines a workflow that calls the btp-setup-automator and deploys a
 # use case around a CAP application on BTP
 
@@ -7,12 +7,12 @@ on:
 
 env:
   DIRECTORY_NAME: DSAG Technologietage 2023 - btp-setup-automator
-  SUBACCOUNT_NAME: SAP Build App
+  SUBACCOUNT_NAME: SAP Build Apps
   LOGIN_METHOD: envVariables
   REGION: us10
 
 jobs:
-    deploy-sap_build_app-on-btp:
+    deploy-sap_build_apps-on-btp:
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
@@ -23,7 +23,7 @@ jobs:
             BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
             BTPSA_PARAM_IDP_TENANT: ${{ secrets.BTPSA_PARAM_IDP_TENANT }}
         steps:
-            - name: 'Create trust to IDP tenant'
+            - name: 'Setup account and create trust to IDP tenant'
               if: ${{ always() }}
               working-directory: /home/user
               shell: bash
@@ -36,7 +36,7 @@ jobs:
                 -directoryname '${{ env.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true
-            - name: 'Deploy SAP Build App on BTP'
+            - name: 'Subscribe to SAP Build Apps on BTP'
               if: ${{ always() }}
               working-directory: /home/user
               shell: bash
