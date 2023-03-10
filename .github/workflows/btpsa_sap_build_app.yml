@@ -5,9 +5,17 @@ name: btp-setup-automator - SAP Build Apps
 on:
   workflow_dispatch:
 
+    inputs:
+      DIRECTORY_NAME:
+        description: 'Directory to be created'
+        default: 'DSAG Technologietage 2023 - btp-setup-automator'
+        required: true
+      SUBACCOUNT_NAME:
+        description: 'BTP sub account to be created'
+        default: 'SAP Build Apps'
+        required: true
+
 env:
-  DIRECTORY_NAME: DSAG Technologietage 2023 - btp-setup-automator
-  SUBACCOUNT_NAME: SAP Build Apps
   LOGIN_METHOD: envVariables
   REGION: us10
 

@@ -5,8 +5,13 @@ name: VT034 - Sample landscape setup
 on:
   workflow_dispatch:
 
+    inputs:
+      DIRECTORY_NAME:
+        description: 'Directory to be created'
+        default: 'DSAG Technologietage 2023 - VT034'
+        required: true
+
 env:
-  DIRECTORY_NAME: DSAG Technologietage 2023 - VT034
   LOGIN_METHOD: envVariables
   REGION: us10
 

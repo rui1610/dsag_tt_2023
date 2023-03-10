@@ -5,8 +5,17 @@ name: btp-setup-automator - CAP app
 on:
   workflow_dispatch:
 
+    inputs:
+      DIRECTORY_NAME:
+        description: 'Directory to be created'
+        default: 'DSAG Technologietage 2023 - btp-setup-automator'
+        required: true
+      SUBACCOUNT_NAME:
+        description: 'BTP sub account to be created'
+        default: 'CAP app'
+        required: true
+
 env:
-  DIRECTORY_NAME: DSAG Technologietage 2023 - btp-setup-automator
   LOGIN_METHOD: envVariables
   REGION: us10
 
@@ -29,7 +38,7 @@ jobs:
                 ./btpsa \
                 -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/cap_app/parameters.json' \
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname 'CAP app' \
+                -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
                 -region '${{ env.REGION }}' \
                 -directoryname '${{ env.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
