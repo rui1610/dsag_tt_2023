@@ -21,12 +21,16 @@ jobs:
             BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
             BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
         steps:
-            - name: 'Setup directory for all landscapes'
+            - name: 'Login to btp'
               if: ${{ always() }}
               working-directory: /home/user
               shell: bash
               run: |
                 btp login --url 'https://cpcli.cf.eu10.hana.ondemand.com' --subdomain '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --user '${{ secrets.BTPSA_PARAM_MYEMAIL }}' --password '${{ secrets.BTPSA_PARAM_MYPASSWORD }}'
+            - name: 'Create directory in BTP account'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
               run: |
                 btp accounts/directory --global-account '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --display-name '${{ env.DIRECTORY_NAME }}'
 
