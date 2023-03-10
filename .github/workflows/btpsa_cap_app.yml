@@ -1,0 +1,56 @@
+name: btp-setup-automator - Deploy CAP app
+# This file defines a workflow that calls the btp-setup-automator and deploys a
+# use case around a CAP application on BTP
+
+on:
+  workflow_dispatch:
+
+env:
+  DIRECTORY_NAME: DSAG Technologietage 2023 - btp-setup-automator
+  LOGIN_METHOD: envVariables
+  REGION: us10
+
+jobs:
+    setup-directory:
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+          options: --user root
+        env: 
+            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
+            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+        steps:
+            - name: 'Login to btp and create directory'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: |
+                btp login --url 'https://cpcli.cf.eu10.hana.ondemand.com' --subdomain '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --user '${{ secrets.BTPSA_PARAM_MYEMAIL }}' --password '${{ secrets.BTPSA_PARAM_MYPASSWORD }}'
+                btp create accounts/directory --global-account '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --display-name '${{ env.DIRECTORY_NAME }}'
+
+    setup-cap-app:
+        needs: setup-directory
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+          options: --user root
+        env: 
+            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
+            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+        steps:
+            - name: 'Setup landscape for HR DEV'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: |
+                ./btpsa \
+                -parameterfile 'https://raw.githubusercontent.com/SAP-samples/rui1610/main/btpsa_session/cap_app/parameters.json' \
+                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
+                -subaccountname 'CAP app'
+                -region '${{ env.REGION }}' \
+                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -loginmethod '${{ env.LOGIN_METHOD }}' \
+                -usedirectory true
+            

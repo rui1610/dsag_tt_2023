@@ -3,7 +3,7 @@ name: VT034 - Sample landscape cleanup
 # business units (HR, IT, SALES) and aubaccounts for dev, test and prod
 
 env:
-  DIRECTORY_NAME: DSAG Technologietage 2023
+  DIRECTORY_NAME: DSAG Technologietage 2023 - VT034
   LOGIN_METHOD: envVariables
   REGION: us10
 

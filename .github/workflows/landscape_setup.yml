@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  DIRECTORY_NAME: DSAG Technologietage 2023
+  DIRECTORY_NAME: DSAG Technologietage 2023 - VT034
   LOGIN_METHOD: envVariables
   REGION: us10
 
