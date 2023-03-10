@@ -38,8 +38,8 @@ jobs:
                 ./btpsa \
                 -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/cap_app/parameters.json' \
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
                 -region '${{ env.REGION }}' \
-                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true

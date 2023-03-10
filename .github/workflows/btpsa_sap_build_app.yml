@@ -39,9 +39,9 @@ jobs:
                 ./btpsa \
                 -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step1_parameters.json' \
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
                 -region '${{ env.REGION }}' \
-                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true
             - name: 'Subscribe to SAP Build Apps on BTP'
@@ -52,9 +52,9 @@ jobs:
                 ./btpsa \
                 -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step2_parameters.json' \
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
                 -region '${{ env.REGION }}' \
-                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true
 
