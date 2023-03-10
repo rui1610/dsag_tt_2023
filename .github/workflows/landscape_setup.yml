@@ -8,7 +8,7 @@ on:
     inputs:
       DIRECTORY_NAME:
         description: 'Directory to be created'
-        default: 'DSAG Technologietage 2023 - VT034'
+        default: 'DSAG TT 2023 - VT034'
         required: true
 
 env:

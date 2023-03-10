@@ -1,9 +1,8 @@
 name: VT034 - Sample landscape cleanup
-# This file creates an account structure for a company with three
-# business units (HR, IT, SALES) and aubaccounts for dev, test and prod
+# This file helps to delete a BTP directory including all related 
+# sub accounts and data. USE WITH CAUTION!
 
 env:
-  DIRECTORY_NAME: DSAG Technologietage 2023 - VT034
   LOGIN_METHOD: envVariables
   REGION: us10
 
@@ -12,9 +11,7 @@ on:
 
     inputs:
       DIRECTORY_ID:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'ID of BTP directory to delete. CAUTION!!!'
-        # Input has to be provided for the workflow to run
+        description: 'ID of BTP directory to delete. CAUTION! All sub accounts and data will be deleted!'
         required: true
 
 jobs:
