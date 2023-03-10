@@ -34,5 +34,4 @@ jobs:
               shell: bash
               run: |
                 btp login --url 'https://cpcli.cf.eu10.hana.ondemand.com' --subdomain '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --user '${{ secrets.BTPSA_PARAM_MYEMAIL }}' --password '${{ secrets.BTPSA_PARAM_MYPASSWORD }}'
-              run: |
                 btp delete accounts/directory ${{ github.event.inputs.DIRECTORY_ID }} --global-account '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --force-delete --confirm
