@@ -14,6 +14,10 @@ on:
         description: 'BTP sub account to be created'
         default: 'SAP Build Apps'
         required: true
+      SUBACCOUNT_SUBDOMAIN:
+        description: 'Subdomain of subaccount (please keep the default value as used in step2_usecase.json file)'
+        default: 'sap-build-apps-dsag2023'
+        required: true
 
 env:
   LOGIN_METHOD: envVariables
@@ -40,6 +44,7 @@ jobs:
                 -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step1_parameters.json' \
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
                 -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
+                -subdomain '${{ github.event.inputs.SUBACCOUNT_SUBDOMAIN }}' \
                 -region '${{ env.REGION }}' \
                 -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
@@ -53,6 +58,7 @@ jobs:
                 -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step2_parameters.json' \
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
                 -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
+                -subdomain '${{ github.event.inputs.SUBACCOUNT_SUBDOMAIN }}' \
                 -region '${{ env.REGION }}' \
                 -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \

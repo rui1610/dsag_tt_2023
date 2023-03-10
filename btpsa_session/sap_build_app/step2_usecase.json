@@ -5,7 +5,33 @@
       "name": "sap-build-apps",
       "plan": "free",
       "category": "APPLICATION",
-      "targetenvironment": "sapbtp"
+      "targetenvironment": "sapbtp",
+      "requiredrolecollections": [
+        {
+          "name": "BuildAppsAdmin",
+          "assignedUserGroupsFromParameterFile": [
+            "developers"
+          ]
+        },
+        {
+          "name": "BuildAppsDeveloper",
+          "assignedUserGroupsFromParameterFile": [
+            "developers"
+          ]
+        },
+        {
+          "name": "RegistryAdmin",
+          "assignedUserGroupsFromParameterFile": [
+            "developers"
+          ]
+        },
+        {
+          "name": "RegistryDeveloper",
+          "assignedUserGroupsFromParameterFile": [
+            "developers"
+          ]
+        },
+      ]
     },
     {
       "category": "APPLICATION",
@@ -19,6 +45,30 @@
           ]
         }
       ]
+    },
+    {
+      "category": "SERVICE",
+      "name": "destination",
+      "plan": "lite",
+      "parameters": {
+        "HTML5Runtime_enabled": "true",
+        "init_data": {
+            "subaccount": {
+                "existing_destinations_policy": "update",
+                "destinations": [
+                    {
+                        "Name": "SAP-Build-Apps-Runtime",
+                        "Type": "HTTP",
+                        "Description": "Endpoint to SAP Build Apps runtime",
+                        "URL": "https://sap-build-apps-dsag2023.cr1.us10.apps.build.cloud.sap",
+                        "ProxyType": "Internet",
+                        "Authentication": "NoAuthentication",
+                        "HTML5.ForwardAuthToken": true
+                    }
+                ]
+            }
+        }
+    }      
     }
   ],
   "assignrolecollections": [
