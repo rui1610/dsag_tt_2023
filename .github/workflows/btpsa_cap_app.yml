@@ -21,7 +21,7 @@ jobs:
             BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
             BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
         steps:
-            - name: 'Login to btp and create directory'
+            - name: 'Deploy CAP app on BTP'
               if: ${{ always() }}
               working-directory: /home/user
               shell: bash
