@@ -6,32 +6,7 @@
       "plan": "free",
       "category": "APPLICATION",
       "targetenvironment": "sapbtp",
-      "requiredrolecollections": [
-        {
-          "name": "BuildAppsAdmin",
-          "assignedUserGroupsFromParameterFile": [
-            "developers"
-          ]
-        },
-        {
-          "name": "BuildAppsDeveloper",
-          "assignedUserGroupsFromParameterFile": [
-            "developers"
-          ]
-        },
-        {
-          "name": "RegistryAdmin",
-          "assignedUserGroupsFromParameterFile": [
-            "developers"
-          ]
-        },
-        {
-          "name": "RegistryDeveloper",
-          "assignedUserGroupsFromParameterFile": [
-            "developers"
-          ]
-        }
-      ]
+      "instancename": "sapbuildapps-instance"
     },
     {
       "category": "APPLICATION",
@@ -53,93 +28,60 @@
       "parameters": {
         "HTML5Runtime_enabled": "true",
         "init_data": {
-            "subaccount": {
-                "existing_destinations_policy": "update",
-                "destinations": [
-                    {
-                        "Name": "SAP-Build-Apps-Runtime",
-                        "Type": "HTTP",
-                        "Description": "Endpoint to SAP Build Apps runtime",
-                        "URL": "https://sap-build-apps-dsag2023.cr1.us10.apps.build.cloud.sap",
-                        "ProxyType": "Internet",
-                        "Authentication": "NoAuthentication",
-                        "HTML5.ForwardAuthToken": true
-                    }
-                ]
-            }
+          "subaccount": {
+            "existing_destinations_policy": "update",
+            "destinations": [
+              {
+                "Name": "SAP-Build-Apps-Runtime",
+                "Type": "HTTP",
+                "Description": "Endpoint to SAP Build Apps runtime",
+                "URL": "https://sap-build-apps-dsag2023.cr1.us10.apps.build.cloud.sap",
+                "ProxyType": "Internet",
+                "Authentication": "NoAuthentication",
+                "HTML5.ForwardAuthToken": true
+              }
+            ]
+          }
         }
-    }      
+      }
     }
   ],
-  "assignrolecollections": [
+  "executeAfterAccountSetup": [
     {
-      "name": "Global Account Administrator",
-      "type": "account",
-      "level": "global account",
-      "assignedUserGroupsFromParameterFile": [
-        "admins"
-      ]
+      "description": "Create role collection for BuildAppsAdmin",
+      "command": "btp create security/role-collection BuildAppsAdmin --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     },
     {
-      "name": "Subaccount Administrator",
-      "type": "account",
-      "level": "sub account",
-      "assignedUserGroupsFromParameterFile": [
-        "admins"
-      ]
+      "description": "Create role collection for BuildAppsDeveloper",
+      "command": "btp create security/role-collection BuildAppsDeveloper --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     },
     {
-      "name": "Subaccount Service Administrator",
-      "type": "account",
-      "level": "sub account",
-      "assignedUserGroupsFromParameterFile": [
-        "admins"
-      ]
+      "description": "Create role collection for RegistryAdmin",
+      "command": "btp create security/role-collection RegistryAdmin --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     },
     {
-      "name": "SpaceManager",
-      "type": "cloudfoundry",
-      "level": "space",
-      "assignedUserGroupsFromParameterFile": [
-        "admins",
-        "developers"
-      ]
+      "description": "Create role collection for RegistryDeveloper",
+      "command": "btp create security/role-collection RegistryDeveloper --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     },
     {
-      "name": "SpaceDeveloper",
-      "type": "cloudfoundry",
-      "level": "space",
-      "assignedUserGroupsFromParameterFile": [
-        "admins",
-        "developers"
-      ]
+      "description": "Get list of security roles",
+      "command": "btp --format json list security/role --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json) > ./log/list_security_roles.json"
     },
     {
-      "name": "SpaceAuditor",
-      "type": "cloudfoundry",
-      "level": "space",
-      "assignedUserGroupsFromParameterFile": [
-        "admins",
-        "developers"
-      ]
+      "description": "Add role BuildAppsAdmin to role collection BuildAppsAdmin",
+      "command": "btp add security/role BuildAppsAdmin --to-role-collection BuildAppsAdmin --of-role-template BuildAppsAdmin --of-app $(jq -r '.[]  | select(.roleTemplateName==\"BuildAppsAdmin\") | .roleTemplateAppId' ./log/list_security_roles.json) --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     },
     {
-      "name": "OrgManager",
-      "type": "cloudfoundry",
-      "level": "org",
-      "assignedUserGroupsFromParameterFile": [
-        "admins",
-        "testers"
-      ]
+      "description": "Add role BuildAppsDeveloper to role collection BuildAppsDeveloper",
+      "command": "btp add security/role BuildAppsDeveloper --to-role-collection BuildAppsDeveloper --of-role-template BuildAppsDeveloper --of-app $(jq -r '.[]  | select(.roleTemplateName==\"BuildAppsDeveloper\") | .roleTemplateAppId' ./log/list_security_roles.json) --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     },
     {
-      "name": "OrgAuditor",
-      "type": "cloudfoundry",
-      "level": "org",
-      "assignedUserGroupsFromParameterFile": [
-        "admins",
-        "auditors"
-      ]
+      "description": "Add role RegistryAdmin to role collection RegistryAdmin",
+      "command": "btp add security/role RegistryAdmin --to-role-collection RegistryAdmin --of-role-template RegistryAdmin --of-app $(jq -r '.[]  | select(.roleTemplateName==\"RegistryAdmin\") | .roleTemplateAppId' ./log/list_security_roles.json) --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
+    },
+    {
+      "description": "Add role RegistryDeveloper to role collection RegistryDeveloper",
+      "command": "btp add security/role RegistryDeveloper --to-role-collection RegistryDeveloper --of-role-template RegistryDeveloper --of-app $(jq -r '.[]  | select(.roleTemplateName==\"RegistryDeveloper\") | .roleTemplateAppId' ./log/list_security_roles.json) --subaccount $(jq -r '.subaccountid' ./log/metadata_log.json)"
     }
   ]
 }
