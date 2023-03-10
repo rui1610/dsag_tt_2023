@@ -1,0 +1,52 @@
+name: btp-setup-automator - Deploy CAP app
+# This file defines a workflow that calls the btp-setup-automator and deploys a
+# use case around a CAP application on BTP
+
+on:
+  workflow_dispatch:
+
+env:
+  DIRECTORY_NAME: DSAG Technologietage 2023 - btp-setup-automator
+  SUBACCOUNT_NAME: SAP Build App
+  LOGIN_METHOD: envVariables
+  REGION: us10
+
+jobs:
+    deploy-sap_build_app-on-btp:
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+          options: --user root
+        env: 
+            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
+            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+            BTPSA_PARAM_IDP_TENANT: ${{ secrets.BTPSA_PARAM_IDP_TENANT }}
+        steps:
+            - name: 'Create trust to IDP tenant'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: |
+                ./btpsa \
+                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step1_parameters.json' \
+                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
+                -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+                -region '${{ env.REGION }}' \
+                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -loginmethod '${{ env.LOGIN_METHOD }}' \
+                -usedirectory true
+            - name: 'Deploy SAP Build App on BTP'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: |
+                ./btpsa \
+                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step2_parameters.json' \
+                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
+                -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+                -region '${{ env.REGION }}' \
+                -directoryname '${{ env.DIRECTORY_NAME }}' \
+                -loginmethod '${{ env.LOGIN_METHOD }}' \
+                -usedirectory true
+
