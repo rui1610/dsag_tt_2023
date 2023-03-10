@@ -35,7 +35,7 @@ jobs:
                 btp create accounts/directory --global-account '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' --display-name '${{ github.event.inputs.DIRECTORY_NAME }}'
 
     landscape-setup-hr:
-        needs: landscape-setup-it
+        needs: setup-directory
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
