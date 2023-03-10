@@ -1,4 +1,4 @@
-name: btp-setup-automator - Deploy CAP app
+name: btp-setup-automator - Deploy SAP Build App
 # This file defines a workflow that calls the btp-setup-automator and deploys a
 # use case around a CAP application on BTP
 
