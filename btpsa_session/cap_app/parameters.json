@@ -6,26 +6,25 @@
       {
         "name": "admins",
         "members": [
-          "john.admin@test.com",
-          "jane.admin@test.com"
+          "rui.nogueira@sap.com"
         ]
       },
       {
         "name": "developers",
         "members": [
-          "tony@stark.com"
+          "rui.nogueira@sap.com"
         ]
       },
       {
         "name": "auditors",
         "members": [
-          "captain@america.com"
+          "rui.nogueira@sap.com"
         ]
       },
       {
         "name": "testers",
         "members": [
-          "hulk@angry.arg"
+          "rui.nogueira@sap.com"
         ]
       }
     ]
