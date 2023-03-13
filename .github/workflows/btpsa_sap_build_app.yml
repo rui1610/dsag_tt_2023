@@ -36,7 +36,6 @@ jobs:
             BTPSA_PARAM_IDP_TENANT: ${{ secrets.BTPSA_PARAM_IDP_TENANT }}
         steps:
             - name: 'Setup account and create trust to IDP tenant'
-              if: ${{ always() }}
               working-directory: /home/user
               shell: bash
               run: |
@@ -50,7 +49,6 @@ jobs:
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true
             - name: 'Subscribe to SAP Build Apps on BTP'
-              if: ${{ always() }}
               working-directory: /home/user
               shell: bash
               run: |
@@ -64,7 +62,6 @@ jobs:
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true
             - name: 'Assign roles'
-              if: ${{ always() }}
               working-directory: /home/user
               shell: bash
               run: |
