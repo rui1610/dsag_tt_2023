@@ -8,7 +8,7 @@ on:
     inputs:
       DIRECTORY_NAME:
         description: 'Directory to be created'
-        default: 'DSAG TT 2023 - btp-setup-automator'
+        default: 'DSAG AG BTP DevOps - Mar 2023 - btp-setup-automator'
         required: true
       SUBACCOUNT_NAME:
         description: 'BTP sub account to be created'
