@@ -35,7 +35,7 @@
                 "Name": "SAP-Build-Apps-Runtime",
                 "Type": "HTTP",
                 "Description": "Endpoint to SAP Build Apps runtime",
-                "URL": "https://sap-build-apps-dsag2023.cr1.us10.apps.build.cloud.sap",
+                "URL": "https://sap-build-apps-dsag2023.cr1.us10.apps.build.cloud.sap/",
                 "ProxyType": "Internet",
                 "Authentication": "NoAuthentication",
                 "HTML5.ForwardAuthToken": true
