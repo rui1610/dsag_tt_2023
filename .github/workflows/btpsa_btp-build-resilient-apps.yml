@@ -1,6 +1,7 @@
-name: btp-setup-automator - CAP app
+name: btp-setup-automator - Build resilient apps
 # This file defines a workflow that calls the btp-setup-automator and deploys a
-# use case around a CAP application on BTP
+# use case around building resilient apps 
+# see https://github.com/SAP-samples/btp-build-resilient-apps
 
 on:
   workflow_dispatch:
