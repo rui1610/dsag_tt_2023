@@ -21,7 +21,7 @@ env:
   REGION: us10
 
 jobs:
-    deploy-cap-app-on-btp:
+    deploy-resilient-apps:
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
@@ -38,6 +38,7 @@ jobs:
               run: |
                 ./btpsa \
                 -usecasefile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/usecases/released/build_resilient_apps_free_tier.json' \
+                -myusergroups '[{'name': 'admins', 'members': ['rui.nogueira@sap.com']}, {'name': 'developers', 'members': ['rui.nogueira@sap.com']}, {'name': 'auditors', 'members': ['rui.nogueira@sap.com']}, {'name': 'testers', 'members': ['rui.nogueira@sap.com']}]'
                 -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
                 -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
                 -region '${{ env.REGION }}' \
