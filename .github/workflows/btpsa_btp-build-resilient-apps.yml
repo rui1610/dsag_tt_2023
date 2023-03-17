@@ -1,0 +1,45 @@
+name: btp-setup-automator - CAP app
+# This file defines a workflow that calls the btp-setup-automator and deploys a
+# use case around a CAP application on BTP
+
+on:
+  workflow_dispatch:
+
+    inputs:
+      DIRECTORY_NAME:
+        description: 'Directory to be created'
+        default: 'DSAG AG BTP DevOps - Mar 2023 - btp-setup-automator'
+        required: true
+      SUBACCOUNT_NAME:
+        description: 'BTP sub account to be created'
+        default: 'Build resilient apps'
+        required: true
+
+env:
+  LOGIN_METHOD: envVariables
+  REGION: us10
+
+jobs:
+    deploy-cap-app-on-btp:
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+          options: --user root
+        env: 
+            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
+            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+        steps:
+            - name: 'Deploy use case: Build resilient apps'
+              if: ${{ always() }}
+              working-directory: /home/user
+              shell: bash
+              run: |
+                ./btpsa \
+                -usecasefile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/usecases/released/build_resilient_apps_free_tier.json'
+                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
+                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
+                -region '${{ env.REGION }}' \
+                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
+                -loginmethod '${{ env.LOGIN_METHOD }}' \
+                -usedirectory true
