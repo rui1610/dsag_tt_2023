@@ -125,7 +125,7 @@ jobs:
                 -usedirectory true
 
     landscape-setup-sales:
-        needs: setup-directory
+        needs: landscape-setup-it
         runs-on: ubuntu-latest
         container:
           image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
@@ -168,3 +168,4 @@ jobs:
                 -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
                 -loginmethod '${{ env.LOGIN_METHOD }}' \
                 -usedirectory true
+
