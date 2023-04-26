@@ -10,6 +10,7 @@ on:
         required: true
       REGION:
         description: "Region for the sub account"
+        # Ensure to apply change in step2_usecase.json for destination attribute "URL"
         default: "us10"
         required: true
       IDP_TENANT:
@@ -24,7 +25,8 @@ on:
 env:
   DIRECTORY_NAME: Tests btp-setup-automator
   SUBACCOUNT_NAME: SAP Build Apps
-  SUBDOMAIN: my-tests-2023-04-26
+  # Ensure to apply change in step2_usecase.json for destination attribute "URL"
+  SUBDOMAIN: my-tests-sba-2023-04-26
 
   LOGIN_METHOD: envVariables
   # Don't change this value (folder created by GitHub automatically within Docker container)!
