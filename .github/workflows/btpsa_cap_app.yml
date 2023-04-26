@@ -1,45 +1,53 @@
 name: btp-setup-automator - CAP app
 # This file defines a workflow that calls the btp-setup-automator and deploys a
-# use case around a CAP application on BTP
+# use case around deploying a CAP app
 
 on:
   workflow_dispatch:
-
     inputs:
-      DIRECTORY_NAME:
-        description: 'Directory to be created'
-        default: 'DSAG AG BTP DevOps - Mar 2023 - btp-setup-automator'
+      GLOBALACCOUNT:
+        description: "Your Global account subdomain"
         required: true
-      SUBACCOUNT_NAME:
-        description: 'BTP sub account to be created'
-        default: 'CAP app'
+      REGION:
+        description: "Region for the sub account"
+        default: "us10"
         required: true
 
 env:
+  DIRECTORY_NAME: Tests btp-setup-automator
+  SUBACCOUNT_NAME: CAP app
+
   LOGIN_METHOD: envVariables
-  REGION: us10
+  # Don't change this value (folder created by GitHub automatically within Docker container)!
+  FOLDER_REPO: /__w/
 
 jobs:
-    deploy-cap-app-on-btp:
-        runs-on: ubuntu-latest
-        container:
-          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
-          options: --user root
-        env: 
-            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
-            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
-            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
-        steps:
-            - name: 'Deploy CAP app on BTP'
-              if: ${{ always() }}
-              working-directory: /home/user
-              shell: bash
-              run: |
-                ./btpsa \
-                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/cap_app/parameters.json' \
-                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
-                -region '${{ env.REGION }}' \
-                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
-                -loginmethod '${{ env.LOGIN_METHOD }}' \
-                -usedirectory true
+  deploy-all-necessary-services:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+      options: --user root
+    env:
+      BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+      BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+      BTPSA_PARAM_GLOBALACCOUNT: ${{ github.event.inputs.GLOBALACCOUNT }}
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      - name: "Get repo folder in container"
+        working-directory: /home/user
+        shell: bash
+        run: |
+          echo "REPO_NAME=/__w/$(basename ${{ github.repository }})/$(basename ${{ github.repository }})" >> $GITHUB_ENV
+      - name: "Setup account and deploy CAP app"
+        working-directory: /home/user
+        shell: bash
+        run: |
+          ./btpsa \
+          -parameterfile '${{ env.REPO_NAME }}/btpsa_session/cap_app/parameters.json' \
+          -globalaccount '${{ github.event.inputs.GLOBALACCOUNT }}' \
+          -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+          -region '${{ github.event.inputs.REGION }}' \
+          -directoryname '${{ env.DIRECTORY_NAME }}' \
+          -loginmethod '${{ env.LOGIN_METHOD }}' \
+          -usedirectory true
