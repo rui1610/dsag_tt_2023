@@ -31,8 +31,6 @@ jobs:
       BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
       BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
       BTPSA_PARAM_GLOBALACCOUNT: ${{ github.event.inputs.GLOBALACCOUNT }}
-      BTPSA_PARAM_IDP_TENANT: ${{ github.event.inputs.IDP_TENANT }}
-      BTPSA_PARAM_IDP_TENANT_CFG_NAME: ${{ github.event.inputs.IDP_TENANT_CFG_NAME }}
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
