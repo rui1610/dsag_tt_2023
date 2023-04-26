@@ -1,76 +1,94 @@
 name: btp-setup-automator - SAP Build Apps
 # This file defines a workflow that calls the btp-setup-automator and deploys a
-# use case around a CAP application on BTP
+# use case around SAP Build Apps
 
 on:
   workflow_dispatch:
-
     inputs:
-      DIRECTORY_NAME:
-        description: 'Directory to be created'
-        default: 'DSAG AG BTP DevOps - Mar 2023 - btp-setup-automator'
+      GLOBALACCOUNT:
+        description: "Your Global account subdomain"
         required: true
-      SUBACCOUNT_NAME:
-        description: 'BTP sub account to be created'
-        default: 'SAP Build Apps'
+      REGION:
+        description: "Region for the sub account"
+        default: "us10"
         required: true
-      SUBACCOUNT_SUBDOMAIN:
-        description: 'Subdomain of subaccount (please keep the default value as used in step2_usecase.json file)'
-        default: 'sap-build-apps-dsag2023'
+      IDP_TENANT:
+        description: "Your IDP tenant"
+        default: "xxxxxxx.accounts.ondemand.com"
+        required: true
+      IDP_TENANT_CFG_NAME:
+        description: "Config name for IDP tenant"
+        default: "my-own-trust-config-20230426"
         required: true
 
 env:
+  DIRECTORY_NAME: Tests btp-setup-automator
+  SUBACCOUNT_NAME: SAP Build Apps
+  SUBDOMAIN: my-tests-2023-04-26
+
   LOGIN_METHOD: envVariables
-  REGION: us10
+  # Don't change this value (folder created by GitHub automatically within Docker container)!
+  FOLDER_REPO: /__w/
 
 jobs:
-    deploy-sap_build_apps-on-btp:
-        runs-on: ubuntu-latest
-        container:
-          image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
-          options: --user root
-        env: 
-            BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
-            BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
-            BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
-            BTPSA_PARAM_IDP_TENANT: ${{ secrets.BTPSA_PARAM_IDP_TENANT }}
-        steps:
-            - name: 'Setup account and create trust to IDP tenant'
-              working-directory: /home/user
-              shell: bash
-              run: |
-                ./btpsa \
-                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step1_parameters.json' \
-                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
-                -subdomain '${{ github.event.inputs.SUBACCOUNT_SUBDOMAIN }}' \
-                -region '${{ env.REGION }}' \
-                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
-                -loginmethod '${{ env.LOGIN_METHOD }}' \
-                -usedirectory true
-            - name: 'Subscribe to SAP Build Apps on BTP'
-              working-directory: /home/user
-              shell: bash
-              run: |
-                ./btpsa \
-                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step2_parameters.json' \
-                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
-                -subdomain '${{ github.event.inputs.SUBACCOUNT_SUBDOMAIN }}' \
-                -region '${{ env.REGION }}' \
-                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
-                -loginmethod '${{ env.LOGIN_METHOD }}' \
-                -usedirectory true
-            - name: 'Assign roles'
-              working-directory: /home/user
-              shell: bash
-              run: |
-                ./btpsa \
-                -parameterfile 'https://raw.githubusercontent.com/rui1610/dsag_tt_2023/main/btpsa_session/sap_build_app/step3_parameters.json' \
-                -globalaccount '${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}' \
-                -subaccountname '${{ github.event.inputs.SUBACCOUNT_NAME }}' \
-                -subdomain '${{ github.event.inputs.SUBACCOUNT_SUBDOMAIN }}' \
-                -region '${{ env.REGION }}' \
-                -directoryname '${{ github.event.inputs.DIRECTORY_NAME }}' \
-                -loginmethod '${{ env.LOGIN_METHOD }}' \
-                -usedirectory true
+  deploy-all-necessary-services:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sap-samples/btp-setup-automator-dev:dev
+      options: --user root
+    env:
+      BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+      BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+      BTPSA_PARAM_GLOBALACCOUNT: ${{ github.event.inputs.GLOBALACCOUNT }}
+      BTPSA_PARAM_IDP_TENANT: ${{ github.event.inputs.IDP_TENANT }}
+      BTPSA_PARAM_IDP_TENANT_CFG_NAME: ${{ github.event.inputs.IDP_TENANT_CFG_NAME }}
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      - name: "Get repo folder in container"
+        working-directory: /home/user
+        shell: bash
+        run: |
+          echo "REPO_NAME=/__w/$(basename ${{ github.repository }})/$(basename ${{ github.repository }})" >> $GITHUB_ENV
+      - name: "Setup account and create trust to IDP tenant"
+        working-directory: /home/user
+        shell: bash
+        run: |
+          ./btpsa \
+          -parameterfile '${{ env.REPO_NAME }}/setup/generic_parameters.json' \
+          -usecasefile '${{ env.REPO_NAME }}/setup/step1_usecase.json' \
+          -globalaccount '${{ github.event.inputs.GLOBALACCOUNT }}' \
+          -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+          -subdomain '${{ env.SUBDOMAIN }}' \
+          -region '${{ github.event.inputs.REGION }}' \
+          -directoryname '${{ env.DIRECTORY_NAME }}' \
+          -loginmethod '${{ env.LOGIN_METHOD }}' \
+          -usedirectory true
+      - name: "Subscribe to SAP Build Apps on BTP"
+        working-directory: /home/user
+        shell: bash
+        run: |
+          ./btpsa \
+          -parameterfile '${{ env.REPO_NAME }}/setup/generic_parameters.json' \
+          -usecasefile '${{ env.REPO_NAME }}/setup/step2_usecase.json' \
+          -globalaccount '${{ github.event.inputs.GLOBALACCOUNT }}' \
+          -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+          -subdomain '${{ env.SUBDOMAIN }}' \
+          -region '${{ github.event.inputs.REGION }}' \
+          -directoryname '${{ env.DIRECTORY_NAME }}' \
+          -loginmethod '${{ env.LOGIN_METHOD }}' \
+          -usedirectory true
+      - name: "Assign roles for SAP Build Apps"
+        working-directory: /home/user
+        shell: bash
+        run: |
+          ./btpsa \
+          -parameterfile '${{ env.REPO_NAME }}/setup/generic_parameters.json' \
+          -usecasefile '${{ env.REPO_NAME }}/setup/step3_usecase.json' \
+          -globalaccount '${{ github.event.inputs.GLOBALACCOUNT }}' \
+          -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
+          -subdomain '${{ env.SUBDOMAIN }}' \
+          -region '${{ github.event.inputs.REGION }}' \
+          -directoryname '${{ env.DIRECTORY_NAME }}' \
+          -loginmethod '${{ env.LOGIN_METHOD }}' \
+          -usedirectory true
