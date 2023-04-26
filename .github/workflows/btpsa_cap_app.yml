@@ -46,7 +46,7 @@ jobs:
         shell: bash
         run: |
           ./btpsa \
-          -parameterfile '${{ env.REPO_NAME }}/btpsa_session/cap_app/generic_parameters.json' \
+          -parameterfile '${{ env.REPO_NAME }}/btpsa_session/cap_app/parameters.json' \
           -globalaccount '${{ github.event.inputs.GLOBALACCOUNT }}' \
           -subaccountname '${{ env.SUBACCOUNT_NAME }}' \
           -region '${{ github.event.inputs.REGION }}' \
