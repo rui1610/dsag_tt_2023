@@ -19,14 +19,14 @@ on:
         required: true
       IDP_TENANT_CFG_NAME:
         description: "Config name for IDP tenant"
-        default: "my-own-trust-config-20230426"
+        default: "my-own-trust-config-20230505"
         required: true
 
 env:
   DIRECTORY_NAME: Tests btp-setup-automator
   SUBACCOUNT_NAME: SAP Build Apps
   # Ensure to apply change in step2_usecase.json for destination attribute "URL"
-  SUBDOMAIN: my-tests-sba-2023-04-26
+  SUBDOMAIN: my-tests-sba-2023-05-05
 
   LOGIN_METHOD: envVariables
   # Don't change this value (folder created by GitHub automatically within Docker container)!
