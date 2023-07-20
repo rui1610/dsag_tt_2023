@@ -1,0 +1,66 @@
+name: TF sample - dev/test/prod setup
+
+on:
+  workflow_dispatch:
+
+inputs:
+      GLOBALACCOUNT:
+        description: "Your Global account subdomain"
+        required: true
+      REGION:
+        description: "Region for the sub account"
+        # Ensure to apply change in step2_usecase.json for destination attribute "URL"
+        default: "us10"
+        required: true
+      IDP_TENANT:
+        description: "Your IDP tenant"
+        default: "xxxxxxx.accounts.ondemand.com"
+        required: true
+
+env:
+  DIRECTORY_NAME: SAP BTP samples
+  SUBACCOUNT_NAME: Create dev-test-prod landscape
+  GITHUB_SAMPLES_REPO: https://github.com/SAP-samples/btp-terraform-samples
+  GITHUB_SAMPLES_FOLDER: released/uc_dev-test-prod
+  ######################################
+  # Don't change these env values below
+  ######################################
+  # folder created by GitHub automatically within Docker container)!
+  FOLDER_REPO: /__w/
+  FOLDER_CLONED_CODE: code
+  TF_VARS_FILE: terraform.tfvars
+
+jobs:
+  setup_infrastructure:
+    name: Run Terraform script
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get code from External repo
+      run: |
+        git clone ${{ env.GITHUB_SAMPLES_REPO }} ${{ env.FOLDER_CLONED_CODE }}
+        cd ${{ env.FOLDER_CLONED_CODE }}
+        echo "custom_idp=${{env.IDP_TENANT}}" >  ${{ env.TF_VARS_FILE}}        
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+    - name: Terraform Init
+      id: init
+      working-directory:  ${{ env.FOLDER_CLONED_CODE }}/${{env.GITHUB_SAMPLES_FOLDER}}
+      shell: bash
+      run: |
+        echo "Running terraform script in dir: ${{ env.FOLDER_CLONED_CODE }}/${{env.GITHUB_SAMPLES_FOLDER}}"
+        terraform init
+    - name: Terraform Apply
+      id: terraform_apply
+      working-directory:  ${{ env.FOLDER_CLONED_CODE }}/${{env.GITHUB_SAMPLES_FOLDER}}
+      env:      
+        TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
+        BTP_USERNAME: ${{ secrets.BTP_USERNAME }}
+        BTP_PASSWORD: ${{ secrets.BTP_PASSWORD }}
+        CF_USER: ${{ secrets.BTP_USERNAME }}
+        CF_PASSWORD: ${{ secrets.BTP_PASSWORD }}
+      run: |
+        echo "Running terraform script in dir: ${{needs.determine_execution_values.outputs.tf_action_working_dir}}"
+        terraform apply -auto-approve -var repo_name=${{needs.determine_execution_values.outputs.generated_gh_reponame}}
+      shell: bash
