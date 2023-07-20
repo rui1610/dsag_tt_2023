@@ -1,4 +1,4 @@
-name: TF sample - dev/test/prod setup
+name: TF sample dev tst prd setup
 
 on:
   workflow_dispatch:
